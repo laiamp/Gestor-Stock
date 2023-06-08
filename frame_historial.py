@@ -5,7 +5,8 @@ class Frame_Historial(Frame_Base):
         self.rellenar_tabla(self.sql.get_tabla("historial"))
         self.widgets()
 
-    def widgets(self): #crea los objetos del frame
+    def widgets(self):
+        '''crea los objetos del frame'''
         self.c_mes = ttk.Combobox(self, width=20, values = self.sql.get_meses(), state="readonly")
         self.c_proveedor = ttk.Combobox(self, width=20, values = self.sql.get_tabla("proveedores"), state="readonly")
         self.c_categoria = ttk.Combobox(self, width=20, values = self.sql.get_tabla("categorias"), state="readonly")
@@ -32,7 +33,8 @@ class Frame_Historial(Frame_Base):
         boton_grafico.grid(row=6, column=5)
         boton_descargar.grid(row=6, column=6)
 
-    def crear_tabla(self): #crea una tabla de historial vacía
+    def crear_tabla(self):
+        '''crea una tabla de historial vacía'''
         self.tabla_historial = ttk.Treeview(self, height = 18, selectmode=BROWSE, show="headings")
 
         #columnas
@@ -69,7 +71,8 @@ class Frame_Historial(Frame_Base):
         self.tabla_historial.configure(yscrollcommand=self.tabla_scroll.set)
         self.tabla_scroll.config(command=self.tabla_historial.yview)
 
-    def rellenar_tabla(self, rows): #rellena tabla historial con contenido de la base de datos
+    def rellenar_tabla(self, rows):
+        '''rellena tabla historial con contenido de la base de datos'''
         #personaliza la tabla
         style = ttk.Style()
         style.theme_use("clam")
@@ -80,12 +83,15 @@ class Frame_Historial(Frame_Base):
             if i % 2 == 0: #las filas pares serán de otro color
                 self.tabla_historial.tag_configure(i, background='white')
 
-    def actualizar_tabla(self): #destruye la tabla y la vuelve a crear
+                
+    def actualizar_tabla(self): 
+        '''destruye la tabla y la vuelve a crear'''
         self.tabla_historial.destroy()
         self.crear_tabla()
         self.rellenar_tabla(self.sql.get_tabla("historial"))
 
-    def popup_tabla(self, e): #como se llama al método mediante un event binding (doble click) hace falta pasar un parámetro extra (e)
+    def popup_tabla(self, e): 
+        '''como se llama al método mediante un event binding (doble click) hace falta pasar un parámetro extra (e)'''
         try:
             fecha = self.tabla_historial.item(self.tabla_historial.focus(), "values")[0]
             nombre = self.tabla_historial.item(self.tabla_historial.focus(), "values")[3]
@@ -109,7 +115,8 @@ class Frame_Historial(Frame_Base):
         except IndexError:
             pass
 
-    def popup_editar(self, fecha, nombre): #abre un popup para editar descuento, precio y/o proveedor
+    def popup_editar(self, fecha, nombre):
+        '''abre un popup para editar descuento, precio y/o proveedor'''
         self.popup.destroy()
         self.crear_popup()
         self.popup.title("Editar producto")
@@ -154,7 +161,8 @@ class Frame_Historial(Frame_Base):
         boton_confirmar = ttk.Button(self.popup, text="Confirmar", command = lambda: self.input_editar(fecha, e_descuento_nuevo.get(), e_precio_nuevo.get(), c_proveedor_nuevo.get()))
         boton_confirmar.grid(row=3, column=1)
 
-    def input_editar(self, fecha, descuento, precio, proveedor): #modifica los valores en la base de datos historial y si es necesario recalcula el total
+    def input_editar(self, fecha, descuento, precio, proveedor): 
+        '''modifica los valores en la base de datos historial y si es necesario recalcula el total'''
         if len(proveedor) != 0 or len(precio) != 0 or len(descuento) != 0:
             if len(descuento) == 0 and len(precio) == 0: #solo se ha modificado proveedor
                 self.sql.set_valor_producto(nombre_tabla="historial", columna="proveedor", id=fecha, valor=proveedor)
@@ -196,28 +204,33 @@ class Frame_Historial(Frame_Base):
         else:
             messagebox.showwarning(message="No se ha introducido ningún valor", title="Error en la entrada")
 
-    def clear_mes(self): #destruye el combobox mes y lo vuelve a crear para limpiar su contenido
+    def clear_mes(self):
+        '''destruye el combobox mes y lo vuelve a crear para limpiar su contenido'''
         self.c_mes.destroy()
         self.c_mes = ttk.Combobox(self, width=20, values = self.sql.get_meses(), state="readonly")
         self.c_mes.grid(row=6, column=2)
 
-    def clear_proveedor(self): #destruye el combobox proveedor y lo vuelve a crear para limpiar su contenido
+    def clear_proveedor(self):
+        '''destruye el combobox proveedor y lo vuelve a crear para limpiar su contenido'''
         self.c_proveedor.destroy()
         self.c_proveedor = ttk.Combobox(self, width=20, values = self.sql.get_tabla("proveedores"), state="readonly")
         self.c_proveedor.grid(row=7, column=2)
 
-    def clear_categoria(self): #destruye el combobox categoría y lo vuelve a crear para limpiar su contenido
+    def clear_categoria(self):
+        '''destruye el combobox categoría y lo vuelve a crear para limpiar su contenido'''
         self.c_categoria.destroy()
         self.c_categoria = ttk.Combobox(self, width=20, values = self.sql.get_tabla("categorias"), state="readonly")
         self.c_categoria.grid(row=8, column=2)
 
-    def borrar(self, fecha, nombre): #elimina definitivamente una compra de la base de datos y de la tabla según su fecha
+    def borrar(self, fecha, nombre):
+        '''elimina definitivamente una compra de la base de datos y de la tabla según su fecha'''
         if messagebox.askyesno(message= f"¿Desea eliminar {nombre} permanentemente del historial?", title="Advertencia") == True:
             self.sql.borrar_elemento(nombre_tabla="historial", columna_id="fecha", id=fecha)
             self.actualizar_tabla()
             self.quitar_popup()
 
-    def filtrar(self): #permite filtrar las compras de la tabla según mes, categoría y/o proveedor
+    def filtrar(self):
+        '''permite filtrar las compras de la tabla según mes, categoría y/o proveedor'''
         self.tabla_historial.destroy()
         self.crear_tabla()
         mes = self.c_mes.get()
@@ -250,7 +263,8 @@ class Frame_Historial(Frame_Base):
 
         self.rellenar_tabla(rows)
 
-    def popup_grafico(self): #abre popup para seleccionar mes y mostrar su gráfico
+    def popup_grafico(self):
+        '''abre popup para seleccionar mes y mostrar su gráfico'''
         if self._popup_abierto == False:
             self.crear_popup()
             self.popup.title("Gráficos")
@@ -286,7 +300,8 @@ class Frame_Historial(Frame_Base):
         else:
             messagebox.showwarning(message="No se ha seleccionado ningún mes", title="Error en la entrada")
 
-    def popup_descargar(self): #popup para seleccionar el mes a descargar
+    def popup_descargar(self):
+        '''popup para seleccionar el mes a descargar'''
         if self._popup_abierto == False:
             self.crear_popup()
             self.popup.title("Descarga")
@@ -301,7 +316,8 @@ class Frame_Historial(Frame_Base):
             boton_descargar =  ttk.Button(self.popup, text = "Descargar", command=lambda:self.descargar_excel(mes_descarga.get()))
             boton_descargar.grid(row=0, column=1, pady=10, padx=10)
 
-    def descargar_excel(self, id_mes): #descarga excel con las compras del mes de la base de datos (historial)
+    def descargar_excel(self, id_mes):
+        '''descarga excel con las compras del mes de la base de datos (historial)'''
         if len(id_mes) != 0: #comprueba que se haya seleccionado algún mes
             mes = id_mes[0:2]
             año = id_mes[3:]
