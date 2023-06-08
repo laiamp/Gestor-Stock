@@ -17,7 +17,7 @@ class App():
         self.window.title("Gestor de Stock")
         self.window.iconbitmap('c:/Users/laiam/OneDrive/Documentos/IB/INFORMÀTICA IB/GESTOR STOCK 2.0/pngdiente.ico') #añade un icono a la ventana
 
-        #dimensiones de la ventana
+        # dimensiones de la ventana
         width, height = 1600, 800
         screen_width=self.window.winfo_screenwidth()
         screen_height = self.window.winfo_screenheight()
@@ -38,18 +38,23 @@ class App():
         self.label_titulo.grid(row=0, column=1, sticky="ew")
         self.label_titulo.config(bg="gray75", font=("Verdana",12))
 
-    def ir_historial(self): #destruye el frame stock y crea el frame historial
+
+    def ir_historial(self): 
+        '''destruye el frame stock y crea el frame historial'''
+        
         self.frame_stock.destroy() #destruye el frame antiguo
         self.boton_ir_historial.destroy() #destruye el botón
 
-        self.text.set("HISTORIAL") #cambia el título del frame
+        self.text.set("HISTORIAL") # cambia el título del frame
         self.frame_historial = Frame_Historial(self.window) #crea el frame historial
         self.frame_historial.grid(row=1, column=1, padx=10, pady=10)
 
         self.boton_ir_stock = ttk.Button(self.window, width=11, text = "Ir a stock", command=self.ir_stock)
         self.boton_ir_stock.grid(row=0, column=0)
 
-    def ir_stock(self): #destruye el frame historial y crea el frame stock
+        
+    def ir_stock(self): 
+        '''destruye el frame historial y crea el frame stock'''
         self.frame_historial.destroy()
         self.boton_ir_stock.destroy()
 
@@ -59,3 +64,9 @@ class App():
 
         self.boton_ir_historial = ttk.Button(self.window, width=11, text = "Ir a historial", command=self.ir_historial)
         self.boton_ir_historial.grid(row=0, column=0)
+
+        
+if __name__=="__main__":
+    ctypes.windll.shcore.SetProcessDpiAwareness(1) #permite mantener la misma resolución al generar los gráficos
+    app = App()
+    app.window.mainloop()
