@@ -6,3 +6,10 @@ The application is a stock management software for a dental clinic. It was my ve
 # Requirements
 
 # Usage
+
+- `graficos.py`
+
+# Author
+Laia Mogas
+
+Graduated from the International Baccalaureate diplomma and student of Data Science and Engineering at UPC.
