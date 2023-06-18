@@ -6,8 +6,8 @@ The application is a stock management software for a dental clinic. It was my ve
 # Requirements
 
 # Usage
-
-- `graficos.py`
+The GUI is made with `Tkinter`.
+- `graficos.py`:
 
 # Author
 Laia Mogas
