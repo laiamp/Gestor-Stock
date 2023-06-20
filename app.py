@@ -10,6 +10,9 @@ from matplotlib.figure import Figure
 import xlsxwriter
 from xlsxwriter.workbook import Workbook
 
+from sqlite import *
+from frame_stock import *
+from frame_historial import *
 
 class App():
     def __init__(self): #constructor de la clase
