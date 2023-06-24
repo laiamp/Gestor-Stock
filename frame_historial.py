@@ -1,3 +1,8 @@
+from frame_base import *
+from grafico import *
+
+
+
 class Frame_Historial(Frame_Base):
     def __init__(self, window):
         super().__init__(window)
@@ -83,14 +88,14 @@ class Frame_Historial(Frame_Base):
             if i % 2 == 0: #las filas pares serán de otro color
                 self.tabla_historial.tag_configure(i, background='white')
 
-                
-    def actualizar_tabla(self): 
+
+    def actualizar_tabla(self):
         '''destruye la tabla y la vuelve a crear'''
         self.tabla_historial.destroy()
         self.crear_tabla()
         self.rellenar_tabla(self.sql.get_tabla("historial"))
 
-    def popup_tabla(self, e): 
+    def popup_tabla(self, e):
         '''como se llama al método mediante un event binding (doble click) hace falta pasar un parámetro extra (e)'''
         try:
             fecha = self.tabla_historial.item(self.tabla_historial.focus(), "values")[0]
@@ -161,7 +166,7 @@ class Frame_Historial(Frame_Base):
         boton_confirmar = ttk.Button(self.popup, text="Confirmar", command = lambda: self.input_editar(fecha, e_descuento_nuevo.get(), e_precio_nuevo.get(), c_proveedor_nuevo.get()))
         boton_confirmar.grid(row=3, column=1)
 
-    def input_editar(self, fecha, descuento, precio, proveedor): 
+    def input_editar(self, fecha, descuento, precio, proveedor):
         '''modifica los valores en la base de datos historial y si es necesario recalcula el total'''
         if len(proveedor) != 0 or len(precio) != 0 or len(descuento) != 0:
             if len(descuento) == 0 and len(precio) == 0: #solo se ha modificado proveedor

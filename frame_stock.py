@@ -1,3 +1,5 @@
+from frame_base import *
+
 class Frame_Stock(Frame_Base):
     def __init__(self, window): #constructor
         super().__init__(window)
@@ -34,9 +36,9 @@ class Frame_Stock(Frame_Base):
         boton_clear_estatus.grid(row=8, column=3)
         boton_update.grid(row=9, column=0, columnspan=3, pady=5, padx=10)
 
-    def crear_tabla(self): 
+    def crear_tabla(self):
         '''crea una tabla de stock vacía'''
-        
+
         self.tabla_stock = ttk.Treeview(self, height = 20, selectmode=BROWSE, show="headings")
         self.tabla_stock['columns'] = ("Referencia", "Nombre", "Cantidad", "Categoría", "Estatus") #columnas de la tabla
 
@@ -69,20 +71,20 @@ class Frame_Stock(Frame_Base):
         self.tabla_stock.configure(yscrollcommand=self.tabla_scroll.set)
         self.tabla_scroll.config(command=self.tabla_stock.yview)
 
-    def rellenar_tabla(self, rows): 
+    def rellenar_tabla(self, rows):
         '''rellena tabla stock con contenido de la base de datos'''
         for i, row in enumerate(rows):
             self.tabla_stock.insert("", END, values=row, tag=i) #se añade una fila a la tabla
             if i % 2 == 0: #aplica un color distinto a las filas pares, de modo que se alterna el color de las tabla
                 self.tabla_stock.tag_configure(i, background='white')
 
-    def actualizar_tabla(self): 
+    def actualizar_tabla(self):
         '''destruye la tabla y la vuelve a crear'''
         self.tabla_stock.destroy()
         self.crear_tabla()
         self.rellenar_tabla(self.sql.get_tabla("stock"))
 
-    def filtrar(self, categoria, estatus): 
+    def filtrar(self, categoria, estatus):
         '''permite filtrar los productos de la tabla según categoría y estatus'''
         self.tabla_stock.destroy()
         self.crear_tabla()
@@ -101,19 +103,19 @@ class Frame_Stock(Frame_Base):
 
         self.rellenar_tabla(rows) #se rellena la tabla con los productos seleccionados
 
-    def clear_categoria(self): 
+    def clear_categoria(self):
         '''destruye el combobox categoría y lo vuelve a crear para limpiar su contenido'''
         self.seleccionar_categoria.destroy()
         self.seleccionar_categoria = ttk.Combobox(self, width=25, values=self.sql.get_tabla("categorias"), state="readonly")
         self.seleccionar_categoria.grid(row=6, column=0, columnspan=3)
 
-    def clear_estatus(self):  
+    def clear_estatus(self):
         '''destruye el combobox estatus y lo vuelve a crear para limpiar su contenido'''
         self.seleccionar_estatus.destroy()
         self.seleccionar_estatus = ttk.Combobox(self, width=25, values=("OK", "FALTA", "AGOTADO"), state="readonly")
         self.seleccionar_estatus.grid(row=8, column=0, columnspan=3)
 
-    def popup_tabla(self, e): 
+    def popup_tabla(self, e):
         '''abre un popup al hacer doble click sobre un elemento de la tabla. Botón para opciones gastar, reponer, editar y borrar
             dado que se llama al método mediante un event binding (doble click) hace falta pasar un parámetro extra (e)
         '''
@@ -152,7 +154,7 @@ class Frame_Stock(Frame_Base):
             self.actualizar_tabla()
             self.quitar_popup()
 
-    def popup_referencia(self): 
+    def popup_referencia(self):
         '''abre un popup para introducir una referencia'''
         if self._popup_abierto == False:
             self.crear_popup()
@@ -172,7 +174,7 @@ class Frame_Stock(Frame_Base):
             boton_enviar = ttk.Button(self.popup, text = "Confirmar", command = lambda:self.input_referencia(e_referencia.get()))
             boton_enviar.grid(row = 1, column = 1, pady = 5)
 
-    def input_referencia(self, referencia): 
+    def input_referencia(self, referencia):
         '''evalúa la referencia introducida y abre el popup que corresponda'''
         if len(referencia) != 0:
             if self.sql.existe("stock", "referencia", referencia) == True: #existe un producto con esa referencia
@@ -184,7 +186,7 @@ class Frame_Stock(Frame_Base):
         else:
             messagebox.showwarning(message="No se ha introducido ninguna referencia", title="Error en la entrada")
 
-    def popup_reponer(self, referencia, nombre=None): 
+    def popup_reponer(self, referencia, nombre=None):
         '''popup para introducir datos del producto a reponer'''
         self.popup.destroy()
         self.crear_popup()
@@ -222,7 +224,7 @@ class Frame_Stock(Frame_Base):
         boton_confirmar = ttk.Button(self.popup, text="Confirmar", command=lambda: self.input_reponer(referencia, nombre, c_proveedor.get(), e_cantidad.get(), e_precio_unidad.get(), e_descuento.get()))
         boton_confirmar.grid(row=5, column=1)
 
-    def input_reponer(self, referencia, nombre, proveedor, cantidad, precio_unidad, descuento): 
+    def input_reponer(self, referencia, nombre, proveedor, cantidad, precio_unidad, descuento):
         '''repone la cantidad y añade la compra a stock'''
         if len(proveedor)!=0 and len(cantidad)!=0 and len(precio_unidad)!=0 and len(descuento)!=0: #valida que las entradas no estén vacías
             try:
@@ -250,7 +252,7 @@ class Frame_Stock(Frame_Base):
         else:
             messagebox.showwarning(message="Asegúrese de haber rellenado todos los campos", title="Error en la entrada")
 
-    def popup_gastar(self, referencia): 
+    def popup_gastar(self, referencia):
         '''popup para reducir la cantidad de un producto de stock'''
         self.popup.destroy()
         self.crear_popup()
@@ -278,7 +280,7 @@ class Frame_Stock(Frame_Base):
         boton_confirmar = ttk.Button(self.popup, text="Confirmar", command = lambda: self.input_gastar(referencia, s_gasto.get()))
         boton_confirmar.grid(row=2, column=1, pady=10)
 
-    def input_gastar(self, referencia, gasto): 
+    def input_gastar(self, referencia, gasto):
         '''valida y gasta la cantidad del producto de stock'''
         cantidad = self.sql.get_elemento_tabla("stock", referencia, "cantidad")
         cantidad = int(cantidad)
@@ -316,13 +318,13 @@ class Frame_Stock(Frame_Base):
         else:
             messagebox.showwarning(message="No se ha introducido ninguna cantidad", title="Error en la entrada")
 
-    def get_fecha(self): 
+    def get_fecha(self):
         '''obtiene la fecha actual'''
         now = datetime.now()
         now = now.strftime("%d/%m/%Y %H:%M:%S") # dd/mm/YY H:M:S
         return now
 
-    def popup_stock(self, referencia): 
+    def popup_stock(self, referencia):
         '''popup para añadir un nuevo producto'''
         if self._popup_abierto == False:
             self.crear_popup()
@@ -372,7 +374,7 @@ class Frame_Stock(Frame_Base):
             boton_enviar = ttk.Button(self.popup, text = "Confirmar datos", command = lambda: self.input_stock(referencia, e_fecha.get(), e_nombre.get().upper(),e_precio_unidad.get(), e_cantidad.get(), e_stock_min.get(), e_descuento.get(), c_proveedor.get(), c_categoria.get()))
             boton_enviar.grid(row = 9, column = 1, pady = 5)
 
-    def input_stock(self, referencia, fecha, nombre, precio_unidad, cantidad, stock_min, descuento, proveedor, categoria): 
+    def input_stock(self, referencia, fecha, nombre, precio_unidad, cantidad, stock_min, descuento, proveedor, categoria):
         '''valida la información del producto y lo guarda en la base de datos (stock e historial)'''
         if len(fecha)!=0 and len(referencia)!=0 and len(nombre)!=0 and len(precio_unidad)!=0 and len(cantidad)!=0 and len(stock_min)!=0 and len(descuento)!=0 and len(proveedor)!=0 and len(categoria)!=0:
             try:
@@ -401,7 +403,7 @@ class Frame_Stock(Frame_Base):
         else:
             messagebox.showwarning(message="Asegúrese de haber rellenado todos los campos", title="Error en la entrada")
 
-    def popup_editar(self, referencia, nombre_antiguo): 
+    def popup_editar(self, referencia, nombre_antiguo):
         '''abre un popup para editar nombre, stock_min y/o categoría'''
         self.popup.destroy()
         self.crear_popup()
@@ -498,7 +500,7 @@ class Frame_Stock(Frame_Base):
             self.quitar_popup()
             self.actualizar_tabla()
 
-    def popup_input_categoria_proveedor(self, tabla, columna): 
+    def popup_input_categoria_proveedor(self, tabla, columna):
         '''popup para añadir categoría o proveedor (indicado por la variable columna)'''
         if self._popup_abierto == False:
             self.crear_popup()
@@ -517,7 +519,7 @@ class Frame_Stock(Frame_Base):
             boton_confirmar = ttk.Button(self.popup, text="Confirmar", command=lambda:self.input_categoria_proveedor(tabla, columna, e_nuevo.get().upper().replace(" ", "_")))
             boton_confirmar.grid(row=1, column=1, pady=10, padx=10)
 
-    def input_categoria_proveedor(self, tabla, columna, nuevo): 
+    def input_categoria_proveedor(self, tabla, columna, nuevo):
         '''valida la categoría/proveedor y se almacena en al base de datos'''
         if len(nuevo) != 0:
             if self.sql.existe(nombre_tabla=tabla, columna=columna, elemento=nuevo) == False:
@@ -555,7 +557,7 @@ class Frame_Stock(Frame_Base):
             boton_confirmar = ttk.Button(self.popup, text="Confirmar", command=lambda:self.editar_categoria_proveedor(tabla, columna, e_nuevo.get().upper().replace(" ", "_"), c_antiguo.get()))
             boton_confirmar.grid(row=2, column=2, pady=10, padx=10)
 
-    def editar_categoria_proveedor(self, tabla, columna, nuevo, old): 
+    def editar_categoria_proveedor(self, tabla, columna, nuevo, old):
         '''valida la entrada y modifica esa categoría/proveedor de la base de datos (categorías/proveedores)'''
         if len(nuevo) != 0 and len(old) != 0:
             if self.sql.existe(nombre_tabla=tabla, columna=columna, elemento=nuevo) == False:
@@ -574,7 +576,7 @@ class Frame_Stock(Frame_Base):
         else:
             messagebox.showwarning(message="Rellene todos los campos", title="Error en la entrada")
 
-    def popup_borrar_categoria_proveedor(self, tabla, columna): 
+    def popup_borrar_categoria_proveedor(self, tabla, columna):
         '''abre un popup para eliminar una categoria/proveedor'''
         if self._popup_abierto == False:
             self.crear_popup()
@@ -591,7 +593,7 @@ class Frame_Stock(Frame_Base):
 
             boton_enviar_proveedor = ttk.Button(self.popup, text="Confirmar", command=lambda:self.borrar_categoria_proveedor(tabla, columna)).grid(row=1, column=1)
 
-    def borrar_categoria_proveedor(self, tabla, columna): 
+    def borrar_categoria_proveedor(self, tabla, columna):
         '''elimina esa categoría/proveedor de la base de datos (categorías/proveedores)'''
         borrar = self.c_borrar.get()
         if len(borrar) != 0:

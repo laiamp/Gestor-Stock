@@ -1,3 +1,5 @@
+import sqlite3
+
 class SQLite():
     def __init__(self):
         self.con = sqlite3.connect('Gestor_Stock.db') #establece la conexión entre la aplicación y la base de datos
@@ -27,7 +29,7 @@ class SQLite():
         self.con.commit()
 
 
-    def get_tabla(self, nombre_tabla): 
+    def get_tabla(self, nombre_tabla):
         '''obtiene todos los valores de una tabla'''
         if nombre_tabla != "stock":
             self.cursor.execute(f"SELECT * FROM {nombre_tabla}")
@@ -36,19 +38,19 @@ class SQLite():
         return self.cursor.fetchall()
 
 
-    def get_meses(self): 
+    def get_meses(self):
         '''obtiene todos los meses en los que se haya añadido algún producto'''
         self.cursor.execute("SELECT mes FROM historial") # algunos meses pueden estar repetidos
         return list(set(self.cursor.fetchall())) # eliminamos duplicados
 
 
-    def get_descarga(self, id): 
+    def get_descarga(self, id):
         '''obtiene todos los parámetros (menos el mes y el año) pertenecientes al mes seleccionado'''
         self.cursor.execute("SELECT fecha, referencia, nombre, proveedor, precio_unidad, cantidad, descuento, total, categoria from historial WHERE mes = ?", (id,))
         return self.cursor.fetchall()
 
 
-    def get_editar(self, id): 
+    def get_editar(self, id):
         '''obtiene valores de stock/historial para editar'''
         self.cursor.execute("SELECT proveedor, precio_unidad, descuento, total, cantidad FROM historial WHERE fecha=?", (id,))
         return self.cursor.fetchall()
@@ -64,24 +66,24 @@ class SQLite():
 
         return self.cursor.fetchone()[0]
 
- 
+
     def get_total(self, mes, columna):
-        '''obtiene un diccionario que agrupe cada categoría/proveedor con su gasto correspondiente'''
+        '''obtiene un diccionario que agrupa cada categoría/proveedor con su gasto correspondiente'''
         self.cursor.execute(f"SELECT {columna}, total FROM historial WHERE mes = ?", (mes,))
         lista = self.cursor.fetchall()
-        dictionary = {} #creo un diccionario vacío
+        dictionary = {}
         for i in lista:
             #i[0] es la categoría del producto e i[1] es su gasto total
             if i[0] in dictionary: # si la categoría ya la habíamos encontrado
                  dictionary[i[0]] += i[1] # se suma el gasto de ese producto al gasto total de la categoría
 
             else: # si la categoría no estaba aún se crea un nuevo par en dictionary con la categoría y el gasto del producto
-                dictionary.update({i[0]: i[1]})
+                dictionary[i[0]] = i[1]
 
         return dictionary
 
 
-    def borrar_elemento(self, nombre_tabla, columna_id, id): 
+    def borrar_elemento(self, nombre_tabla, columna_id, id):
         '''elimina un elemento de una tabla'''
         self.cursor.execute(f"DELETE FROM {nombre_tabla} WHERE {columna_id} = ?", (id,))
         self.con.commit()
@@ -123,7 +125,7 @@ class SQLite():
         self.con.commit()
 
 
-    def set_valor_tabla(self, nombre_tabla, columna, nuevo, old): 
+    def set_valor_tabla(self, nombre_tabla, columna, nuevo, old):
         '''cambia un único valor todas las veces que aparezca en una tabla'''
         self.cursor.execute(f"UPDATE {nombre_tabla} SET {columna} = ? WHERE {columna} = ?", (nuevo, old))
         self.con.commit()
