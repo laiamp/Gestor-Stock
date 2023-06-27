@@ -7,7 +7,12 @@ The application is a stock management software for a dental clinic. It was my ve
 
 # Usage
 The GUI is made with `Tkinter`.
-- `graficos.py`:
+- `app.py`:
+- `sqlite.py`:
+- `frame_base.py`:
+- `frame_stock.py`:
+- `frame_historial.py`:
+- `graficos.py`: 
 
 # Author
 Laia Mogas
