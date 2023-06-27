@@ -5,24 +5,26 @@ import ctypes
 from datetime import datetime
 import xlsxwriter
 from xlsxwriter.workbook import Workbook
+import os
 
-#from sqlite import *
 from frame_stock import *
 from frame_historial import *
+
+WIDTH, HEIGHT = 1600, 800
+FILE_ICON = 'pngdiente.ico'
 
 class App():
     def __init__(self):
         self.window = Tk() # ventana principal de tkinter
         self.window.title("Gestor de Stock")
-        self.window.iconbitmap('pngdiente.ico') # añade un icono a la ventana
+        self.window.iconbitmap(os.getcwd() + "\\" + FILE_ICON) # añade un icono a la ventana
 
         # dimensiones de la ventana
-        width, height = 1600, 800
-        screen_width=self.window.winfo_screenwidth()
+        screen_width = self.window.winfo_screenwidth()
         screen_height = self.window.winfo_screenheight()
-        x = (screen_width/2)-(width/2)
-        y = (screen_height/2)-(height/2)
-        self.window.geometry(f"{width}x{height}+{int(x)}+{int(y)}")
+        x = (screen_width/2)-(WIDTH/2)
+        y = (screen_height/2)-(HEIGHT/2)
+        self.window.geometry(f"{WIDTH}x{HEIGHT}+{int(x)}+{int(y)}")
         self.window.resizable(False, False)
 
         self.frame_stock = Frame_Stock(self.window) #crea el frame del stock
