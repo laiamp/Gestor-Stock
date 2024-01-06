@@ -1,6 +1,5 @@
 from tkinter import *
 from tkinter import ttk
-from tkinter import messagebox
 from sqlite import *
 
 class Frame_Base(Frame):
