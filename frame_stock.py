@@ -36,6 +36,7 @@ class Frame_Stock(Frame_Base):
         boton_clear_estatus.grid(row=8, column=3)
         boton_update.grid(row=9, column=0, columnspan=3, pady=5, padx=10)
 
+
     def crear_tabla(self):
         '''crea una tabla de stock vacía'''
 
